@@ -1,4 +1,5 @@
 # py-lexml-acervo
+<div style="text-align:center"><img src="./imgs/py-lexml-acervo.png" /></div>
 
 `py-lexml-acervo` é um wrapper para a API de consulta do acervo do projeto [LexML](https://www12.senado.leg.br/dados-abertos/conjuntos?grupo=legislacao&portal=legislativo).
 

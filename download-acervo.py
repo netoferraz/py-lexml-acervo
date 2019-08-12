@@ -2,7 +2,7 @@ from apis.acervo import LexmlAcervo, XmlToJson
 from pathlib import Path
 import gc
 
-years = reversed(list(range(2010, 2016)))
+years = reversed(list(range(2000,2010)))
 for year in years:
     # consulta a api e salva arquivos xml
     dados = LexmlAcervo(f"date={year}")
