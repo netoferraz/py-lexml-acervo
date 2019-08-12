@@ -7,6 +7,7 @@ import xmltodict
 from pathlib import Path
 from typing import Union, Tuple
 import os
+import json
 
 
 class LexmlAcervo(object):
@@ -180,7 +181,10 @@ class LexmlAcervo(object):
                 raise FileNotFoundError()
 
 
-class XmlToJson:
+class XmlToJson(object):
+    """
+    Classe para transformar arquivos XML em JSON.
+    """
 
     __BASE_URL = "https://www.lexml.gov.br/urn/"
 
@@ -190,25 +194,64 @@ class XmlToJson:
             self.container_of_json = []
 
     def __parseXml(self, _, document):
+        """
+        Função de callback para ser utilizada pela biblioteca xmltodict para parsear
+        os arquivos XML
+        """
+        tipoDocumento = document.get("tipoDocumento", None)
+        facet_tipoDocumento = document.get("facet-tipoDocumento", None)
+        data = document.get("dc:date", None)
+        urn = document.get("urn", None)
+        url = f"{self.__BASE_URL}{urn}"
+        localidade = document.get("localidade", None)
+        facet_localidade = document.get("facet-localidade", None)
+        autoridade = document.get("autoridade", None)
+        facet_autoridade = document.get("facet-autoridade", None)
+        title = document.get("dc:title", None)
+        description = document.get("dc:description", None)
+        type_ = document.get("dc:type", None)
+        identifier = document.get("dc:identifier", None)
         data = {
-            "tipoDocumento": document["tipoDocumento"],
-            "facet-tipoDocumento": document["facet-tipoDocumento"],
-            "data": document["dc:date"],
-            "urn": document["urn"],
-            "url": f"{self.__BASE_URL}{document['urn']}",
-            "localidade": document["localidade"],
-            "facet-localidade": document["facet-localidade"],
-            "autoridade": document["autoridade"],
-            "facet-autoridade": document["facet-autoridade"],
-            "facet-tipoDocumento": document["facet-tipoDocumento"],
-            "title": document["dc:title"],
-            "description": document["dc:description"],
-            "type": document["dc:type"],
-            "identifier": document["dc:identifier"],
+            "tipoDocumento": tipoDocumento,
+            "facet-tipoDocumento": facet_tipoDocumento,
+            "data":data,
+            "urn": urn,
+            "url": url,
+            "localidade": localidade,
+            "facet-localidade": facet_localidade,
+            "autoridade": autoridade,
+            "facet-autoridade": facet_autoridade,
+            "title": title,
+            "description": description,
+            "type": type_,
+            "identifier": identifier,
         }
         self.container_of_json.append(data)
         return True
 
     def parseToJson(self):
+        """
+        Executa o parser dos arquivos XML
+        """
         xmltodict.parse(self.xml, item_depth=5, item_callback=self.__parseXml)
         return self.container_of_json
+    
+    @staticmethod
+    def saveResults(container: list, path: str, filename: str):
+        """
+        Itera sobre o container de dicionários e os persiste em arquivos JSON.
+
+        Parâmetros:
+            path: Path para salvar os arquivos XML
+            filename: nome base dos arquivos a serem salvos.
+        """
+        path_to_save = Path(path)
+        try:
+            path_to_save.mkdir(parents=True, exist_ok=True)
+        except FileNotFoundError:
+            raise FileNotFoundError()
+        for index, file_ in enumerate(container):
+            aggName = f"{index}_{filename}.json"
+            full_filename = path_to_save / aggName
+            with open(full_filename, "w", encoding="utf8") as f:
+                json.dump(file_, f, ensure_ascii=False)
