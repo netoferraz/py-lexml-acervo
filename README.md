@@ -48,7 +48,17 @@ A API do LexML permite realizar pesquisas por meio de URLs e receber o resultado
 ```
 
 ## 4. Instalação da biblioteca py-lexml-acervo
-`git clone https://github.com/netoferraz/py-lexml-acervo.git`
+### 4.1 Clona Repositório
+`git clone https://github.com/netoferraz/py-lexml-acervo.git`<br>
+### 4.2 Acessa o repositório clonado
+`cd py-lexml-acervo`
+### 4.3 Cria um ambiente virtual
+#### 4.3.1 virtualenv
+`python -m venv .venv`
+### 4.4 Ativa o ambiente virtual
+`source ./.venv/bin/activate`
+### 4.5 Instala as dependências
+`pip install -r requirements.txt`
 
 ## 5. Instruções de uso
 As consultas à API se baseiam na <strong>classe</strong> `LexmlAcervo` localizada em `./apis/acervo`. Para realizar uma consulta se deve instanciar a referida <strong>classe</strong> passando como parâmetro de inicialização uma `query string` no padrão [CQL](https://www.loc.gov/standards/sru/cql/spec.html).
