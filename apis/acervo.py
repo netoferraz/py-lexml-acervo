@@ -214,7 +214,7 @@ class XmlToJson(object):
         data = {
             "tipoDocumento": tipoDocumento,
             "facet-tipoDocumento": facet_tipoDocumento,
-            "data":data,
+            "data": data,
             "urn": urn,
             "url": url,
             "localidade": localidade,
@@ -235,7 +235,7 @@ class XmlToJson(object):
         """
         xmltodict.parse(self.xml, item_depth=5, item_callback=self.__parseXml)
         return self.container_of_json
-    
+
     @staticmethod
     def saveResults(container: list, path: str, filename: str):
         """
