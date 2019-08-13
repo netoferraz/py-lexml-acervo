@@ -12,7 +12,8 @@ for year in years:
     # lê os arquivos xml e os salvo em formato json
     xmlpath = Path(f"./data/xml/{year}").glob("*.xml")
     jsonFiles = [XmlToJson(xmlfile).parseToJson() for xmlfile in xmlpath]
-    XmlToJson.saveResults(jsonFiles, f"./data/json/{year}", f"{year}")
+    if jsonFiles:
+        XmlToJson.saveResults(jsonFiles, f"./data/json/{year}", f"{year}")
     del jsonFiles
     del dados
     gc.collect()

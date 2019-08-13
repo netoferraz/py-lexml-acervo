@@ -55,6 +55,8 @@ class LexmlAcervo(object):
             startRecord: posição inicial no set de resultado da query
             maximumRecordsPerPage: número máximo de resultados por paginação.
         """
+        #identificar querys sem resultado.
+        non_zero_results = True
         if self.__completed_query:
             print(
                 f"Todos os objetos para a query {self.__query_string} foram consumidos."
@@ -93,12 +95,15 @@ class LexmlAcervo(object):
                 self.__total_objects_of_query = numeroObjetos
             if numeroObjetos == 0:
                 print(f"A query {search_string} não retornou nenhum resultado.")
-            self.__addToContainerOfXmlFiles(tree)
+                non_zero_results = False
+            if non_zero_results:
+                self.__addToContainerOfXmlFiles(tree)
             # calcula o número de objetos ainda há serem consultados
             self.__overall_query_objects_tracker += maximumRecordsPerPage
             remain_objects = numeroObjetos - self.__overall_query_objects_tracker
             if self.__overall_query_objects_tracker >= numeroObjetos:
-                print("Todos os objetos foram consultados.")
+                if non_zero_results:
+                    print(f"Todos os {numeroObjetos} objetos foram consultados.")
                 print("Finalizado a paginação da query.")
                 self.__completed_query = True
             if not self.__completed_query:
@@ -167,18 +172,20 @@ class LexmlAcervo(object):
             path: Path para salvar os arquivos XML
             filename: nome base dos arquivos a serem salvos.
         """
-        path_to_save = Path(path)
-        try:
-            path_to_save.mkdir(parents=True, exist_ok=True)
-        except FileNotFoundError:
-            raise FileNotFoundError()
-        for index, xmlfile in enumerate(self.containerOfXmlFiles):
-            aggName = f"{index}_{filename}.xml"
-            full_xml_filename = path_to_save / aggName
+        #identifica se há arquivos a serem salvos
+        if self.containerOfXmlFiles:
+            path_to_save = Path(path)
             try:
-                xmlfile.write(full_xml_filename, encoding="utf-8")
+                path_to_save.mkdir(parents=True, exist_ok=True)
             except FileNotFoundError:
                 raise FileNotFoundError()
+            for index, xmlfile in enumerate(self.containerOfXmlFiles):
+                aggName = f"{index}_{filename}.xml"
+                full_xml_filename = path_to_save / aggName
+                try:
+                    xmlfile.write(full_xml_filename, encoding="utf-8")
+                except FileNotFoundError:
+                    raise FileNotFoundError()
 
 
 class XmlToJson(object):
