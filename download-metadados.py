@@ -11,10 +11,9 @@ from loguru import logger
 BASE_URL = "https://www.lexml.gov.br/urn"
 urns = Path("./data/federal/")
 urns = urns.rglob("*.json")
-
+LOG_FILE = "./log/coleta_metadados_normativos.log"
 logger.add(
-    "./log/coleta_metadados_normativos.log",
-    format="{time:YYYY-MM-DD} | {file} {level} | {line} | {message}",
+    LOG_FILE, format="{time:YYYY-MM-DD HH:mm:ss} | {file} {level} | {line} | {message}"
 )
 
 
@@ -51,8 +50,22 @@ def get_metadata(urn: str, **kwargs):
                 try:
                     metadata = json.loads(tag_script[first_slice:last_slice])
                 except JSONDecodeError:
-                    logger.error(f"Erro na conversão em JSON da urn {urn}.")
-                    pass
+                    try:
+                        first_slice = tag_script.find("{")
+                        last_slice = tag_script.find("</script>")
+                        metadata = json.loads(
+                            "[" + tag_script[first_slice:last_slice] + "]"
+                        )
+                    except JSONDecodeError:
+                        logger.error(f"Erro na conversão em JSON da urn {urn}.")
+                        pass
+                    else:
+                        save_file(
+                            data=metadata,
+                            filename=index,
+                            foldername=foldername,
+                            **{"urn": urn},
+                        )
                 else:
                     save_file(
                         data=metadata,
@@ -88,6 +101,4 @@ for file_ in urns:
         dados_acervo = json.load(f)
         lista_urns = [u.get("urn") for u in dados_acervo]
         for index, urn in enumerate(lista_urns):
-            if "1985-" in urn:
-                continue
             get_metadata(urn=urn, **{"foldername": file_, "index": index})
