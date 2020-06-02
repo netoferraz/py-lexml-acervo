@@ -4,13 +4,11 @@ from json.decoder import JSONDecodeError
 
 json_folder = Path("./data/metadados/")
 json_folder.mkdir(exist_ok=True, parents=True)
-ndjson_folder = Path("./data/metadados/") / "ndjson"
+ndjson_folder = Path("./data/ndjson/") / "ndjson"
 ndjson_folder.mkdir(exist_ok=True, parents=True)
 files = json_folder.rglob("*.json")
 with open(ndjson_folder / "metadados_legislacao.json", "w", encoding="utf8") as _:
     for f in files:
-        if f.name == "metadados_legislacao.json":
-            continue
         with open(f, "r", encoding="utf8") as jfile:
             try:
                 json_metadado = json.load(jfile)[0]
