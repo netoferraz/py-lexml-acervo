@@ -4,7 +4,7 @@ from json.decoder import JSONDecodeError
 
 json_folder = Path("./data/metadados/")
 json_folder.mkdir(exist_ok=True, parents=True)
-ndjson_folder = Path("./data/ndjson/") / "ndjson"
+ndjson_folder = Path("./pyes/data/ndjson/") / "ndjson"
 ndjson_folder.mkdir(exist_ok=True, parents=True)
 files = json_folder.rglob("*.json")
 with open(ndjson_folder / "metadados_legislacao.json", "w", encoding="utf8") as _:
