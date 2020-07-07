@@ -1,0 +1,24 @@
+version: '2.1'
+
+services:
+    elk:
+        image: sebp/elk:770
+        container_name: es
+        environment: 
+            - LOGSTASH_START=0
+            - ES_JAVA_OPTS=-Xms2g -Xmx2g
+            - network.bind_host=0.0.0.0
+            - network.host=0.0.0.0
+            - discovery.type=single-node
+        ports:
+        - "5601:5601"
+        - "9200:9200"
+
+    pyes:
+        build: pyes
+        depends_on:
+            - elk
+        links:
+            - elk
+        
+
