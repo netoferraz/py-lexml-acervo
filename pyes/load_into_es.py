@@ -4,7 +4,9 @@ from pathlib import Path
 import json
 import re
 from loguru import logger
+from time import sleep
 
+sleep(90)
 # connect to es
 NDJSON = "./data/metadados_legislacao.json"
 es = Elasticsearch(f"elk:9200")
