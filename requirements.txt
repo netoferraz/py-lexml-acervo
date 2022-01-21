@@ -10,7 +10,7 @@ colorama==0.4.1
 decorator==4.4.0
 elasticsearch==7.0.0
 idna==2.8
-ipython==7.7.0
+ipython==7.16.3
 ipython-genutils==0.2.0
 jedi==0.14.1
 loguru==0.5.0
